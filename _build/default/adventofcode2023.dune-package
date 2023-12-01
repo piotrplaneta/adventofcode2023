@@ -1,7 +1,0 @@
-(lang dune 3.7)
-(name adventofcode2023)
-(sections (lib .) (bin ../../bin) (doc ../../doc/adventofcode2023))
-(files
- (lib (META dune-package opam))
- (bin (adventofcode2023))
- (doc (README.md)))
