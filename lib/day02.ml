@@ -33,8 +33,7 @@ let allowed_games =
   games
   |> List.filter ~f:(fun (_, game) ->
          List.for_all
-           ~f:(fun draw ->
-             match draw with n, color -> Hashtbl.find_exn allowed color >= n)
+           ~f:(fun (n, color) -> Hashtbl.find_exn allowed color >= n)
            game)
 
 let part_one =
@@ -48,7 +47,7 @@ let min_stones =
          let maxes =
            Hashtbl.of_alist_exn
              (module String)
-             [ ("red", -0); ("green", 0); ("blue", 0) ]
+             [ ("red", 0); ("green", 0); ("blue", 0) ]
          in
          List.iter
            ~f:(fun draw ->
