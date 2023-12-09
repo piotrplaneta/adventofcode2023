@@ -1,5 +1,25 @@
 import Foundation
 
+func gcd(_ a: Int, _ b: Int) -> Int {
+    var (a, b) = (a, b)
+    while b != 0 {
+        (a, b) = (b, a % b)
+    }
+    return abs(a)
+}
+
+func gcd(_ vector: [Int]) -> Int {
+    return vector.reduce(0, gcd)
+}
+
+func lcm(a: Int, b: Int) -> Int {
+    return (a / gcd(a, b)) * b
+}
+
+func lcm(_ vector : [Int]) -> Int {
+    return vector.reduce(1, lcm)
+}
+
 let input = try String(contentsOf: URL(fileURLWithPath: "../input/day08")).split(separator: "\n")
 
 let directions = input[0].replacingOccurrences(of: "L", with: "0").replacingOccurrences(
@@ -29,27 +49,34 @@ func pathLength(from: String, to: String) -> Int {
   }
 
   return pathLengthRec(current: from, lengthSoFar: 0)
-
-}
-
-func pathLengthGhosts() -> Int64 {
-  let starts = edges.keys.filter { $0.last == "A" }
-  print(starts)
-
-  func pathLengthRec(currents: [String], lengthSoFar: Int64) -> Int64 {
-    print(lengthSoFar)
-    if currents.allSatisfy({ $0.last == "Z" }) {
-      return lengthSoFar
-    } else {
-      let nextDir = directions[Int(lengthSoFar % Int64(directions.count))]
-      return pathLengthRec(
-        currents: currents.map { edges[$0]![nextDir] }, lengthSoFar: lengthSoFar + 1)
-    }
-
-  }
-  return pathLengthRec(currents: starts, lengthSoFar: 0)
 }
 
 print(pathLength(from: "AAA", to: "ZZZ"))
 
-print(pathLengthGhosts())
+func pathLengthAndEnd(from: String) -> (Int, String) {
+  let dirLength = directions.count
+
+  func pathLengthAndEndRec(current: String, dirPointer: Int, lengthSoFar: Int) -> (Int, String) {
+    let nextDir = directions[dirPointer]
+    let next = edges[current]![nextDir]
+
+    if current.last == "Z" {
+      return (lengthSoFar, current)
+    } else {
+      return pathLengthAndEndRec(current: next, dirPointer: (dirPointer + 1) % dirLength, lengthSoFar: lengthSoFar + 1)
+    }
+  }
+
+  return pathLengthAndEndRec(current: from, dirPointer: 0, lengthSoFar: 0)
+}
+
+
+let starting = edges.keys.filter { $0.last == "A" }
+let toCheckCycles = starting.map { ($0, pathLengthAndEnd(from: $0)) }
+
+//Check for cycles
+assert(toCheckCycles.allSatisfy { (edges[$0.0]![0] ==  edges[$0.1.1]![($0.1.0 + 1) % directions.count]) })
+let pathLenghts = starting.map { pathLengthAndEnd(from: $0) }.map { $0.0 }
+
+print(lcm(pathLenghts))
+
