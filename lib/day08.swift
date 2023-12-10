@@ -75,7 +75,7 @@ let starting = edges.keys.filter { $0.last == "A" }
 let toCheckCycles = starting.map { ($0, pathLengthAndEnd(from: $0)) }
 
 //Check for cycles
-assert(toCheckCycles.allSatisfy { (edges[$0.0]![0] ==  edges[$0.1.1]![($0.1.0 + 1) % directions.count]) })
+assert(toCheckCycles.allSatisfy { edges[$0.0]![0] ==  edges[$0.1.1]![($0.1.0 + 1) % directions.count] })
 let pathLenghts = starting.map { pathLengthAndEnd(from: $0) }.map { $0.0 }
 
 print(lcm(pathLenghts))
