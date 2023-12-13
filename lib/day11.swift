@@ -1,12 +1,14 @@
 import Foundation
+
 struct Point: Equatable, Hashable {
   let x: Int
   let y: Int
 }
 
-var grid: [Point: String] = [ : ]
+var grid: [Point: String] = [:]
 
-let input = try String(contentsOf: URL(fileURLWithPath: "../input/day11")).split(separator: "\n").map { $0.split(separator: "") }
+let input = try String(contentsOf: URL(fileURLWithPath: "../input/day11")).split(separator: "\n")
+  .map { $0.split(separator: "") }
 
 for (y, line) in input.enumerated() {
   for (x, c) in line.enumerated() {
@@ -16,8 +18,12 @@ for (y, line) in input.enumerated() {
 
 let galaxies = grid.filter { $0.value == "#" }
 
-let emptyRows = (0..<input.count).filter { y in grid.filter({$0.key.y == y}).allSatisfy({$0.value == "."}) }
-let emptyCols = (0..<input[0].count).filter { x in grid.filter({$0.key.x == x}).allSatisfy({$0.value == "."}) }
+let emptyRows = (0..<input.count).filter { y in
+  grid.filter({ $0.key.y == y }).allSatisfy({ $0.value == "." })
+}
+let emptyCols = (0..<input[0].count).filter { x in
+  grid.filter({ $0.key.x == x }).allSatisfy({ $0.value == "." })
+}
 
 func distancesToOtherGalaxies(start: Point, otherGalaxies: [Point]) -> Int {
   return otherGalaxies.map { dest in
@@ -29,7 +35,7 @@ func distancesToOtherGalaxies(start: Point, otherGalaxies: [Point]) -> Int {
 
     for x in startX..<endX {
       if emptyCols.contains(x) {
-        dist += 1000000
+        dist += 1_000_000
       } else {
         dist += 1
       }
@@ -37,7 +43,7 @@ func distancesToOtherGalaxies(start: Point, otherGalaxies: [Point]) -> Int {
 
     for y in startY..<endY {
       if emptyRows.contains(y) {
-        dist += 1000000
+        dist += 1_000_000
       } else {
         dist += 1
       }
@@ -51,8 +57,8 @@ let galaxyPoints = Array(galaxies.keys)
 
 var distance = 0
 for (i, g1) in galaxyPoints.enumerated() {
-  distance += distancesToOtherGalaxies(start: g1, otherGalaxies: Array(galaxyPoints.suffix(from: i + 1)))
+  distance += distancesToOtherGalaxies(
+    start: g1, otherGalaxies: Array(galaxyPoints.suffix(from: i + 1)))
 }
 
 print(distance)
-
